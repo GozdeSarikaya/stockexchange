@@ -1,9 +1,6 @@
 package service;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 public class ServiceManager {
@@ -21,7 +18,14 @@ public class ServiceManager {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/get")
-    public String getStock() {
+    public String getStock(@FormParam("stockid") String stockid) {
+        return "Hello, World!";
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/stock/list")
+    public String listStock() {
         return "Hello, World!";
     }
 
@@ -37,18 +41,20 @@ public class ServiceManager {
 
     //region User
 
-    @POST
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path("/user/save")
-    public String saveUser() {
-        return "Hello, World!";
-    }
+
 
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/user/get")
-    public String getUser() {
+    public String getUser(@FormParam("userid") String userid) {
+        return "Hello, World!";
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/user/list")
+    public String listUser() {
         return "Hello, World!";
     }
 
@@ -56,6 +62,13 @@ public class ServiceManager {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/user/delete")
     public String deleteUser() {
+        return "Hello, World!";
+    }
+
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/user/save")
+    public String saveUser() {
         return "Hello, World!";
     }
 
