@@ -24,6 +24,13 @@ public class ServiceManager {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
+    @Path("/stock/edit")
+    public String editStock(@FormParam("stockid") String stockid) {
+        return "Hello, World!";
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/list")
     public String listStock() {
         return "Hello, World!";
@@ -53,6 +60,13 @@ public class ServiceManager {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
+    @Path("/user/edit")
+    public String editUser(@FormParam("userid") String userid) {
+        return "Hello, World!";
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
     @Path("/user/list")
     public String listUser() {
         return "Hello, World!";
@@ -72,6 +86,26 @@ public class ServiceManager {
         return "Hello, World!";
     }
 
+
+    //endregion
+
+    //region Stock Operations
+
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/stock/buy")
+    public String buyStock() {
+        return "Hello, World!";
+    }
+
+
+
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/stock/sell")
+    public String sellStock() {
+        return "Hello, World!";
+    }
 
     //endregion
 
