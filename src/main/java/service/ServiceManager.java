@@ -1,7 +1,11 @@
 package service;
 
+import hibernate.view.Stock.ListStockView;
+import hibernate.view.Stock.SaveStockView;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 public class ServiceManager {
 
@@ -11,12 +15,18 @@ public class ServiceManager {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/save")
-    public String saveStock() {
-        return "Hello, World!";
+    public Response.ResponseBuilder saveStock(SaveStockView saveStockView) {
+
+        try {
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Response.ok();
     }
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/stock/get")
     public String getStock(@FormParam("stockid") String stockid) {
         return "Hello, World!";
@@ -32,8 +42,14 @@ public class ServiceManager {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/list")
-    public String listStock() {
-        return "Hello, World!";
+    public Response.ResponseBuilder listStock() {
+
+        try {
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Response.ok();
     }
 
     @POST
