@@ -1,20 +1,19 @@
-package com.netas.interview.hibernate.view.Stock;
+package com.netas.interview.hibernate.view.stock;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
-public class SaveStockView  implements Serializable {
+public class EditStockView implements Serializable {
 
-    private String code;
+    private int id;
     private String stockname;
     private String lastmodifiedby;
 
-    public String getCode() {
-        return code;
+    public int getId() {
+        return id;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getStockname() {
@@ -32,4 +31,6 @@ public class SaveStockView  implements Serializable {
     public void setLastmodifiedby(String lastmodifiedby) {
         this.lastmodifiedby = lastmodifiedby;
     }
+
+
 }

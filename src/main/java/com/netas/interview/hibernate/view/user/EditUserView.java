@@ -1,7 +1,6 @@
-package com.netas.interview.hibernate.view.User;
+package com.netas.interview.hibernate.view.user;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 public class EditUserView implements Serializable {
 

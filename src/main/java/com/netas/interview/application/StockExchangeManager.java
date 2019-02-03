@@ -20,8 +20,6 @@ public class StockExchangeManager {
     //endregion
 
 
-
-
     //region Public Methods
 
     public void initialize() {

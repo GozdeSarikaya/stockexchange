@@ -14,4 +14,14 @@ public class UserStock {
 
     private int userid;
     private int stockid;
+
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + id +
+                ", userid=" + userid +
+                ", stockid=" + stockid +
+                '}';
+    }
 }

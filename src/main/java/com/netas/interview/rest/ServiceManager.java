@@ -1,30 +1,27 @@
-package com.netas.interview.service;
+package com.netas.interview.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netas.interview.hibernate.manager.StockManager;
 import com.netas.interview.hibernate.manager.UserManager;
 import com.netas.interview.hibernate.tables.Stock;
 import com.netas.interview.hibernate.tables.User;
-import com.netas.interview.hibernate.view.Stock.EditStockView;
-import com.netas.interview.hibernate.view.Stock.SaveStockView;
-import com.netas.interview.hibernate.view.User.EditUserView;
-import com.netas.interview.hibernate.view.User.SaveUserView;
-import com.netas.interview.utility.EntityManagerUtility;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import com.netas.interview.hibernate.view.stock.EditStockView;
+import com.netas.interview.hibernate.view.stock.SaveStockView;
+import com.netas.interview.hibernate.view.user.EditUserView;
+import com.netas.interview.hibernate.view.user.SaveUserView;
 import org.json.simple.JSONObject;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 
 
 @Path("/")
 public class ServiceManager {
 
+
+    //region Is Alive?
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/isAlive")
@@ -32,6 +29,12 @@ public class ServiceManager {
         return "Hello, World!";
     }
 
+    //endregion
+
+    //region Validation
+
+
+    //endregion
 
     //region Stock
 
@@ -244,28 +247,7 @@ public class ServiceManager {
 
     //endregion
 
-
-
-
-
-/*
-
-
-
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path("/user/edit")
-    public String editUser(@FormParam("userid") String userid) {
-        return "Hello, World!";
-    }
-
-
-
-
-
-
-
-    //region Stock Operations
+    //region User- Stock Operations
 
     @POST
     @Produces(MediaType.TEXT_PLAIN)
@@ -284,7 +266,7 @@ public class ServiceManager {
     }
      //endregion
 
-    */
+
 
 
 

@@ -1,8 +1,6 @@
-package com.netas.interview.hibernate.view.User;
+package com.netas.interview.hibernate.view.user;
 
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 

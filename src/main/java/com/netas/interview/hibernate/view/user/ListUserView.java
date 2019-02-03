@@ -1,4 +1,4 @@
-package com.netas.interview.hibernate.view.User;
+package com.netas.interview.hibernate.view.user;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -44,11 +44,9 @@ public class ListUserView {
         this.email = email;
     }
 
-
     public Date getCreateddate() {
         return createddate;
     }
-
 
     public void setCreateddate(Timestamp createddate) {
         this.createddate = createddate;

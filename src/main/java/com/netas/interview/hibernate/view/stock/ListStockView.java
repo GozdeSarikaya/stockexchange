@@ -1,4 +1,4 @@
-package com.netas.interview.hibernate.view.Stock;
+package com.netas.interview.hibernate.view.stock;
 
 import java.sql.Timestamp;
 

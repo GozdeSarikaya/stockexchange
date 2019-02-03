@@ -1,9 +1,8 @@
 package com.netas.interview.hibernate.manager;
 
-import com.netas.interview.hibernate.tables.Profile;
 import com.netas.interview.hibernate.tables.User;
-import com.netas.interview.hibernate.view.User.EditUserView;
-import com.netas.interview.hibernate.view.User.SaveUserView;
+import com.netas.interview.hibernate.view.user.EditUserView;
+import com.netas.interview.hibernate.view.user.SaveUserView;
 import com.netas.interview.utility.EntityManagerUtility;
 
 import javax.persistence.*;
