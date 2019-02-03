@@ -8,21 +8,7 @@ import java.sql.Timestamp;
 
 @Entity
 public class User {
-/*
-    public User() {
-        super( );
-    }
 
-    public User(String profilename, String loginname, String password, String email, Timestamp createddate, Timestamp lastmodifieddate) {
-        super( );
-        this.profilename = profilename;
-        this.loginname = loginname;
-        this.password = password;
-        this.email = email;
-        this.createddate = createddate;
-        this.lastmodifieddate = lastmodifieddate;
-    }
-*/
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -34,7 +20,6 @@ public class User {
     private Timestamp createddate;
     private Timestamp lastmodifieddate;
 
-    //@Column(name="email")
     public String getEmail() {
         return email;
     }
@@ -42,7 +27,6 @@ public class User {
         this.email = email;
     }
 
-    // @Column(name="profilename")
     public String getProfilename() {
         return profilename;
     }
@@ -50,7 +34,6 @@ public class User {
         this.profilename = profilename;
     }
 
-    // @Column(name="loginname")
     public String getLoginname() {
         return loginname;
     }
@@ -58,7 +41,6 @@ public class User {
         this.loginname = loginname;
     }
 
-    // @Column(name="password")
     public String getPassword() {
         return password;
     }
@@ -66,7 +48,6 @@ public class User {
         this.password = password;
     }
 
-    // @Column(name="createddate")
     public Timestamp getCreateddate() {
         return createddate;
     }

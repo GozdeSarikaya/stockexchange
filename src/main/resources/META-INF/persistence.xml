@@ -6,6 +6,7 @@
         <class>com.netas.interview.hibernate.tables.Profile</class>
         <class>com.netas.interview.hibernate.tables.User</class>
         <class>com.netas.interview.hibernate.tables.Stock</class>
+        <class>com.netas.interview.hibernate.tables.UserStock</class>
         <class>com.netas.interview.utility.EntityManagerUtility</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
