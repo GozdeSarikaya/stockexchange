@@ -1,13 +1,28 @@
 package com.netas.interview.hibernate.tables;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "User")
-public class User implements Serializable {
+public class User {
+/*
+    public User() {
+        super( );
+    }
 
+    public User(String profilename, String loginname, String password, String email, Timestamp createddate, Timestamp lastmodifieddate) {
+        super( );
+        this.profilename = profilename;
+        this.loginname = loginname;
+        this.password = password;
+        this.email = email;
+        this.createddate = createddate;
+        this.lastmodifieddate = lastmodifieddate;
+    }
+*/
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -19,7 +34,7 @@ public class User implements Serializable {
     private Timestamp createddate;
     private Timestamp lastmodifieddate;
 
-    @Column(name="email")
+    //@Column(name="email")
     public String getEmail() {
         return email;
     }
@@ -27,7 +42,7 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    @Column(name="profilename")
+    // @Column(name="profilename")
     public String getProfilename() {
         return profilename;
     }
@@ -35,7 +50,7 @@ public class User implements Serializable {
         this.profilename = profilename;
     }
 
-    @Column(name="loginname")
+    // @Column(name="loginname")
     public String getLoginname() {
         return loginname;
     }
@@ -43,7 +58,7 @@ public class User implements Serializable {
         this.loginname = loginname;
     }
 
-    @Column(name="password")
+    // @Column(name="password")
     public String getPassword() {
         return password;
     }
@@ -51,7 +66,7 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    @Column(name="createddate")
+    // @Column(name="createddate")
     public Timestamp getCreateddate() {
         return createddate;
     }
@@ -59,11 +74,24 @@ public class User implements Serializable {
         this.createddate = createddate;
     }
 
-    @Column(name="lastmodifieddate")
+    // @Column(name="lastmodifieddate")
     public Timestamp getLastmodifieddate() {
         return lastmodifieddate;
     }
     public void setLastmodifieddate(Timestamp lastmodifieddate) {
         this.lastmodifieddate = lastmodifieddate;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + id +
+                ", profilename='" + profilename + '\'' +
+                ", loginname='" + loginname + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", createddate=" + createddate +
+                ", lastmodifieddate=" + lastmodifieddate +
+                '}';
     }
 }

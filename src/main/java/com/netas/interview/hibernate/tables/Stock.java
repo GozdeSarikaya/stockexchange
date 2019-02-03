@@ -6,8 +6,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name="Stock")
-public class Stock implements Serializable {
+public class Stock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,11 +14,11 @@ public class Stock implements Serializable {
 
     private String code;
     private String stockname;
-    private int lastmodifiedby;
+    private String lastmodifiedby;
     private Timestamp createddate;
     private Timestamp lastmodifieddate;
 
-    @Column(name="code", unique = true)
+    //@Column(name="code", unique = true)
     public String getCode() {
         return code;
     }
@@ -27,7 +26,7 @@ public class Stock implements Serializable {
         this.code = code;
     }
 
-    @Column(name="stockname")
+    //@Column(name="stockname")
     public String getStockname() {
         return stockname;
     }
@@ -35,7 +34,7 @@ public class Stock implements Serializable {
         this.stockname = stockname;
     }
 
-    @Column(name="createddate")
+    //@Column(name="createddate")
     public Timestamp getCreateddate() {
         return createddate;
     }
@@ -43,7 +42,7 @@ public class Stock implements Serializable {
         this.createddate = createddate;
     }
 
-    @Column(name="lastmodifieddate")
+    //@Column(name="lastmodifieddate")
     public Timestamp getLastmodifieddate() {
         return lastmodifieddate;
     }
@@ -51,11 +50,23 @@ public class Stock implements Serializable {
         this.lastmodifieddate = lastmodifieddate;
     }
 
-    @Column(name="lastmodifiedby")
-    public int getLastmodifiedby() {
+    //@Column(name="lastmodifiedby")
+    public String getLastmodifiedby() {
         return lastmodifiedby;
     }
-    public void setLastmodifiedby(int lastmodifiedby) {
+    public void setLastmodifiedby(String lastmodifiedby) {
         this.lastmodifiedby = lastmodifiedby;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", stockname='" + stockname + '\'' +
+                ", lastmodifiedby=" + lastmodifiedby +
+                ", createddate=" + createddate +
+                ", lastmodifieddate=" + lastmodifieddate +
+                '}';
     }
 }

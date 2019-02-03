@@ -1,5 +1,9 @@
 package com.netas.interview.utility;
 
+import com.netas.interview.hibernate.tables.User;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -7,6 +11,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 public class EntityManagerUtility {
 
@@ -25,6 +30,15 @@ public class EntityManagerUtility {
         return entityManagerFactory.createEntityManager();
 
     }
+
+    public static void load(SessionFactory sessionFactory) {
+        Session session = sessionFactory.openSession();
+        @SuppressWarnings("unchecked")
+        List<User> users = session.createQuery("FROM User").list();
+        users.forEach((x) -> System.out.printf("- %s%n", x));
+        session.close();
+    }
+
 
     // JDBC driver name and database URL
     static final String JDBC_DRIVER = "org.h2.Driver";

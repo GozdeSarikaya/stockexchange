@@ -7,23 +7,27 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Entity
-@Table(name="Profile")
-public class Profile implements Serializable {
+public class Profile  {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", unique = true, nullable = false, insertable = false,updatable = false)
     private int id;
 
     private String profilename;
 
-
-    @Column(name="profilename", nullable = false)
     public String getProfilename() {
         return profilename;
     }
     public void setProfilename(String profilename) {
         this.profilename = profilename;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + id +
+                ", profilename='" + profilename + '\'' +
+                '}';
     }
 }

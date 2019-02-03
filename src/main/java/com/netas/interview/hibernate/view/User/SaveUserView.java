@@ -1,18 +1,17 @@
 package com.netas.interview.hibernate.view.User;
 
 
-import java.sql.Timestamp;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
-public class SaveUserView {
+
+public class SaveUserView implements Serializable {
 
 
     private String profilename;
     private String loginname;
     private String email;
-    private Timestamp createddate;
-    private Timestamp lastmodifieddate;
-
-
 
     public String getProfilename() {
         return profilename;
@@ -38,20 +37,4 @@ public class SaveUserView {
         this.email = email;
     }
 
-
-    public Timestamp getCreateddate() {
-        return createddate;
-    }
-
-    public void setCreateddate(Timestamp createddate) {
-        this.createddate = createddate;
-    }
-
-    public Timestamp getLastmodifieddate() {
-        return lastmodifieddate;
-    }
-
-    public void setLastmodifieddate(Timestamp lastmodifieddate) {
-        this.lastmodifieddate = lastmodifieddate;
-    }
 }

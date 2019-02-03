@@ -3,6 +3,7 @@ package com.netas.interview.hibernate.manager;
 import com.netas.interview.hibernate.tables.Stock;
 import com.netas.interview.hibernate.view.Stock.EditStockView;
 import com.netas.interview.hibernate.view.Stock.SaveStockView;
+import com.netas.interview.utility.EntityManagerUtility;
 
 import javax.persistence.EntityManager;
 import java.sql.Timestamp;
@@ -11,19 +12,18 @@ import java.util.List;
 
 public class StockManager {
 
-    private EntityManager entityManager = null;//EntityManager.getEntityManager();
+    private EntityManager entityManager = EntityManagerUtility.getEntityManager();
 
 
     public Stock saveStock(SaveStockView stockView) {
         Stock stock = new Stock();
-        SaveStockView stockViews = new SaveStockView();
         try {
             entityManager.getTransaction().begin();
-            stockViews.setCode(stockView.getCode());
-            stockViews.setStockname(stockView.getStockname());
-            stockViews.setLastmodifiedby(stockView.getLastmodifiedby());
-            stockViews.setCreateddate(new Timestamp(System.currentTimeMillis()));
-            stockViews.setLastmodifieddate(new Timestamp(System.currentTimeMillis()));
+            stock.setCode(stockView.getCode());
+            stock.setStockname(stockView.getStockname());
+            stock.setLastmodifiedby(stockView.getLastmodifiedby());
+            stock.setCreateddate(new Timestamp(System.currentTimeMillis()));
+            stock.setLastmodifieddate(new Timestamp(System.currentTimeMillis()));
             stock = entityManager.merge(stock);
             entityManager.getTransaction().commit();
         } catch (Exception e) {
@@ -50,6 +50,7 @@ public class StockManager {
         try {
             entityManager.getTransaction().begin();
             stock = (Stock) entityManager.find(Stock.class, stockid);
+            entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
         }
@@ -59,7 +60,7 @@ public class StockManager {
     public void editStock(EditStockView editStockView) {
         try {
             entityManager.getTransaction().begin();
-            Stock stock = (Stock) entityManager.find(Stock.class, editStockView.getStockname());
+            Stock stock = (Stock) entityManager.find(Stock.class, editStockView.getId());
             stock.setLastmodifiedby(editStockView.getLastmodifiedby());
             stock.setStockname(editStockView.getStockname());
             stock.setLastmodifieddate(new Timestamp(System.currentTimeMillis()));
@@ -74,9 +75,7 @@ public class StockManager {
         List<Stock> stocks = new ArrayList<>();
         try {
             entityManager.getTransaction().begin();
-            String sql = "select '*' from Stock";
-            stocks = entityManager.createQuery(sql).getResultList();
-
+            stocks = entityManager.createQuery("Select e from Stock e").getResultList();
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();

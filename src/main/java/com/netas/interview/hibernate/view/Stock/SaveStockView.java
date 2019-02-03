@@ -1,15 +1,13 @@
 package com.netas.interview.hibernate.view.Stock;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class SaveStockView {
+public class SaveStockView  implements Serializable {
 
     private String code;
     private String stockname;
-    private int lastmodifiedby;
-    private Timestamp createddate;
-    private Timestamp lastmodifieddate;
-
+    private String lastmodifiedby;
 
     public String getCode() {
         return code;
@@ -27,27 +25,11 @@ public class SaveStockView {
         this.stockname = stockname;
     }
 
-    public Timestamp getCreateddate() {
-        return createddate;
-    }
-
-    public void setCreateddate(Timestamp createddate) {
-        this.createddate = createddate;
-    }
-
-    public Timestamp getLastmodifieddate() {
-        return lastmodifieddate;
-    }
-
-    public void setLastmodifieddate(Timestamp lastmodifieddate) {
-        this.lastmodifieddate = lastmodifieddate;
-    }
-
-    public int getLastmodifiedby() {
+    public String getLastmodifiedby() {
         return lastmodifiedby;
     }
 
-    public void setLastmodifiedby(int lastmodifiedby) {
+    public void setLastmodifiedby(String lastmodifiedby) {
         this.lastmodifiedby = lastmodifiedby;
     }
 }
