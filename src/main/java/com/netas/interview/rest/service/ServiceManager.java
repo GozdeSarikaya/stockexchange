@@ -1,4 +1,4 @@
-package com.netas.interview.rest;
+package com.netas.interview.rest.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netas.interview.hibernate.manager.StockManager;

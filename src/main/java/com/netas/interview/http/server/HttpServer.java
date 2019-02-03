@@ -18,7 +18,7 @@ public class HttpServer {
         ServletHolder jerseyServlet = context.addServlet(ServletContainer.class, "/*");
         jerseyServlet.setInitOrder(0);
 
-        jerseyServlet.setInitParameter("jersey.config.server.provider.packages", "com.netas.interview.rest");
+        jerseyServlet.setInitParameter("jersey.config.server.provider.packages", "com.netas.interview.rest.service");
 
         try {
             jettyServer.start();

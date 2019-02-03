@@ -1,4 +1,4 @@
-package com.netas.interview.authentication;
+package com.netas.interview.rest.authentication;
 
 import org.glassfish.jersey.internal.util.Base64;
 
