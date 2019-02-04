@@ -3,7 +3,9 @@ package com.netas.interview.hibernate.manager;
 import com.netas.interview.hibernate.tables.User;
 import com.netas.interview.hibernate.view.user.EditUserView;
 import com.netas.interview.hibernate.view.user.SaveUserView;
+import com.netas.interview.rest.authentication.JWTManager;
 import com.netas.interview.utility.EntityManagerUtility;
+import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -46,13 +48,14 @@ public class UserManager {
     }
 
     public User getUser(int userid) {
-        User user = new User();
+        User user;
         try {
             entityManager.getTransaction().begin();
             user = (User) entityManager.find(User.class, userid);
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
+            return null;
         }
         return user;
     }
@@ -74,11 +77,34 @@ public class UserManager {
         List<User> userList = new ArrayList<>();
         try {
             entityManager.getTransaction().begin();
-             userList = entityManager.createQuery("Select e from User e").getResultList();
+            userList = entityManager.createQuery("Select e from User e").getResultList();
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
         }
         return userList;
+    }
+
+    public JSONObject validateUser(String loginname, String password) {
+        JSONObject jsonObject = new JSONObject();
+        List<User> userList;
+        try {
+            entityManager.getTransaction().begin();
+            userList = entityManager.createQuery("Select e from User e where e.loginname='" + loginname + "'").getResultList();
+            entityManager.getTransaction().commit();
+
+            if (userList.size() == 1)
+                jsonObject.put("token", JWTManager.generateToken(userList.get(0).getLoginname(), userList.get(0).getProfilename().toLowerCase()));
+            else
+                jsonObject.put("token", "");
+
+
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
+            return null;
+        }
+        return jsonObject;
+
+
     }
 }

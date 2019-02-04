@@ -1,108 +1,48 @@
 package com.netas.interview.rest.authentication;
 
-import org.glassfish.jersey.internal.util.Base64;
-
-import javax.annotation.security.DenyAll;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
+import javax.annotation.Priority;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
-import java.lang.reflect.Method;
-import java.util.*;
 
 @Provider
-public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequestFilter
+@Secured
+@Priority(Priorities.AUTHENTICATION)
+public class AuthenticationFilter implements ContainerRequestFilter
 {
 
     @Context
-    private ResourceInfo resourceInfo;
-
-    private static final String AUTHORIZATION_PROPERTY = "Authorization";
-    private static final String AUTHENTICATION_SCHEME = "Basic";
+    public transient HttpServletRequest servletRequest;
 
     @Override
     public void filter(ContainerRequestContext requestContext)
     {
-        Method method = resourceInfo.getResourceMethod();
-        //Access allowed for all
-        if( ! method.isAnnotationPresent(PermitAll.class))
-        {
-            //Access denied for all
-            if(method.isAnnotationPresent(DenyAll.class))
-            {
-                requestContext.abortWith(Response.status(Response.Status.FORBIDDEN)
-                        .entity("Access blocked for all users !!").build());
-                return;
+        UserSessionView tokenUserSessionView;
+        try {
+            String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+            if (authorizationHeader == null) {
+                throw new NotAuthorizedException("AuthorizationHeader bilgisi bulunamadı");
             }
 
-            //Get request headers
-            final MultivaluedMap<String, String> headers = requestContext.getHeaders();
-
-            //Fetch authorization header
-            final List<String> authorization = headers.get(AUTHORIZATION_PROPERTY);
-
-            //If no authorization information present; block access
-            if(authorization == null || authorization.isEmpty())
-            {
-                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("You cannot access this resource").build());
-                return;
+            byte[] decoded;
+            String accessToken;
+            try {
+                authorizationHeader = authorizationHeader.replaceFirst("[B|b]asic ", "");
+                decoded = java.util.Base64.getDecoder().decode(authorizationHeader);
+                accessToken = new String(decoded).split(":", 2)[0]; //0:UserName,1:PAssword alanı. UserName içinde, accesstoken bilgisi var.
+            } catch (Exception ex) {
+                throw new NotAuthorizedException("AccessToken bilgisi alınamadı", ex);
             }
 
-            //Get encoded username and password
-            final String encodedUserPassword = authorization.get(0).replaceFirst(AUTHENTICATION_SCHEME + " ", "");
+            JWTManager.validateToken(servletRequest, accessToken);
+        } catch (Exception exception) {
 
-            //Decode username and password
-            String usernameAndPassword = new String(Base64.decode(encodedUserPassword.getBytes()));;
-
-            //Split username and password tokens
-            final StringTokenizer tokenizer = new StringTokenizer(usernameAndPassword, ":");
-            final String username = tokenizer.nextToken();
-            final String password = tokenizer.nextToken();
-
-            //Verifying Username and password
-            System.out.println(username);
-            System.out.println(password);
-
-            //Verify user access
-            if(method.isAnnotationPresent(RolesAllowed.class))
-            {
-                RolesAllowed rolesAnnotation = method.getAnnotation(RolesAllowed.class);
-                Set<String> rolesSet = new HashSet<String>(Arrays.asList(rolesAnnotation.value()));
-
-                //Is user valid?
-                if( ! isUserAllowed(username, password, rolesSet))
-                {
-                    requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
-                            .entity("You cannot access this resource").build());
-                    return;
-                }
-            }
         }
     }
-    private boolean isUserAllowed(final String username, final String password, final Set<String> rolesSet)
-    {
-        boolean isAllowed = false;
 
-        //Step 1. Fetch password from database and match with password in argument
-        //If both match then get the defined role for user from database and continue; else return isAllowed [false]
-        //Access the database and do this part yourself
-        //String userRole = userMgr.getUserRole(username);
-
-        if(username.equals("howtodoinjava") && password.equals("password"))
-        {
-            String userRole = "ADMIN";
-
-            //Step 2. Verify user role
-            if(rolesSet.contains(userRole))
-            {
-                isAllowed = true;
-            }
-        }
-        return isAllowed;
-    }
 }

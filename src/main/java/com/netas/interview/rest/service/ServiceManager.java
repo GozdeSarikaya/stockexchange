@@ -1,6 +1,5 @@
 package com.netas.interview.rest.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netas.interview.hibernate.manager.StockManager;
 import com.netas.interview.hibernate.manager.UserManager;
 import com.netas.interview.hibernate.tables.Stock;
@@ -9,6 +8,7 @@ import com.netas.interview.hibernate.view.stock.EditStockView;
 import com.netas.interview.hibernate.view.stock.SaveStockView;
 import com.netas.interview.hibernate.view.user.EditUserView;
 import com.netas.interview.hibernate.view.user.SaveUserView;
+import com.netas.interview.rest.authentication.Secured;
 import org.json.simple.JSONObject;
 
 import javax.ws.rs.*;
@@ -32,7 +32,26 @@ public class ServiceManager {
     //endregion
 
     //region Validation
+    @POST
+    @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/validate")
+    public Response validateUser(@FormParam("loginname") String loginname, @FormParam("password") String password) {
+        JSONObject jsonObject = new JSONObject();
+        UserManager userManager;
+        try {
 
+            userManager = new UserManager();
+            jsonObject= userManager.validateUser(loginname, password);
+            // stock = stockManager.getStock(stockid);
+            // jsonObject.put("stock", objectMapper.writeValueAsString(stock));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return Response.ok(jsonObject, MediaType.APPLICATION_JSON).build();
+    }
 
     //endregion
 
@@ -42,22 +61,24 @@ public class ServiceManager {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/stock/get")
-    public Response getStock(@QueryParam("stockid") int stockid) {
+    public Response getStock(@QueryParam("code") String code) {
         JSONObject jsonObject = new JSONObject();
-        ObjectMapper objectMapper = new ObjectMapper();
         Stock stock;
         StockManager stockManager;
         try {
 
             stockManager = new StockManager();
-            stock = stockManager.getStock(stockid);
-            jsonObject.put("stock", objectMapper.writeValueAsString(stock));
+            stock = stockManager.getStock(code);
+            if (stock != null)
+                jsonObject.put("stock", stock);
+            else
+                Response.ok().entity("Stock is NOT found!").build();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return Response.ok().entity(jsonObject.toJSONString()).build();
+        return Response.ok(jsonObject, MediaType.APPLICATION_JSON).build();
     }
 
 
@@ -73,25 +94,26 @@ public class ServiceManager {
 
             stockManager = new StockManager();
             stockList = stockManager.getStockList();
-            jsonObject.put("stocklist", stockList.toString());
+            jsonObject.put("stocklist", stockList);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return Response.ok().entity(jsonObject.toJSONString()).build();
+        return Response.ok(jsonObject, MediaType.APPLICATION_JSON).build();
     }
 
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/delete")
-    public Response deleteStock(@QueryParam("stockid") int stockid) {
+    @Secured
+    public Response deleteStock(@QueryParam("code") String code) {
 
         StockManager stockManager;
         try {
 
             stockManager = new StockManager();
-            stockManager.deleteStock(stockid);
+            stockManager.deleteStock(code);
 
         } catch (Exception e) {
             Response.status(Response.Status.EXPECTATION_FAILED).entity("Stock could not deleted!").build();
@@ -104,7 +126,7 @@ public class ServiceManager {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/save")
-    public Response saveStock(SaveStockView saveStockView)  throws Exception {
+    public Response saveStock(SaveStockView saveStockView) throws Exception {
 
         StockManager stockManager;
         try {
@@ -123,7 +145,7 @@ public class ServiceManager {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/edit")
-    public Response editStock(EditStockView editStockView)  throws Exception {
+    public Response editStock(EditStockView editStockView) throws Exception {
 
         StockManager stockManager;
         try {
@@ -155,13 +177,13 @@ public class ServiceManager {
 
             user = new UserManager();
             userList = user.getUserList();
-            jsonObject.put("userlist", userList.toString());
+            jsonObject.put("userlist", userList);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return Response.ok().entity(jsonObject.toJSONString()).build();
+        return Response.ok(jsonObject, MediaType.APPLICATION_JSON).build();
     }
 
 
@@ -171,20 +193,22 @@ public class ServiceManager {
     public Response getUser(@QueryParam("userid") int userid) {
 
         JSONObject jsonObject = new JSONObject();
-        ObjectMapper objectMapper = new ObjectMapper();
         User user;
         UserManager userManager;
         try {
 
             userManager = new UserManager();
             user = userManager.getUser(userid);
-            jsonObject.put("user", objectMapper.writeValueAsString(user));
+            if (user != null)
+                jsonObject.put("user", user);
+            else
+                Response.ok().entity("User is NOT found!").build();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return Response.ok().entity(jsonObject.toJSONString()).build();
+        return Response.ok(jsonObject, MediaType.APPLICATION_JSON).build();
     }
 
 
@@ -211,7 +235,8 @@ public class ServiceManager {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/user/save")
-    public Response saveUser(SaveUserView saveUserView)  throws Exception {
+    @Secured
+    public Response saveUser(SaveUserView saveUserView) throws Exception {
 
         UserManager user;
         try {
@@ -230,7 +255,7 @@ public class ServiceManager {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/user/edit")
-    public Response seditUser(EditUserView saveUserView)  throws Exception {
+    public Response editUser(EditUserView saveUserView) throws Exception {
 
         UserManager user;
         try {
@@ -257,17 +282,13 @@ public class ServiceManager {
     }
 
 
-
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/sell")
     public String sellStock() {
         return "Hello, World!";
     }
-     //endregion
-
-
-
+    //endregion
 
 
 }

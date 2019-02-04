@@ -33,10 +33,10 @@ public class StockManager {
     }
 
 
-    public void deleteStock(int stockid) {
+    public void deleteStock(String code) {
         try {
             entityManager.getTransaction().begin();
-            Stock stock = (Stock) entityManager.find(Stock.class, stockid);
+            List<Stock> stock = (List<Stock>)entityManager.createQuery("Select e from Stock e where e.code='"+code+"'").getResultList();
             entityManager.remove(stock);
             entityManager.getTransaction().commit();
         } catch (Exception e) {
@@ -45,14 +45,15 @@ public class StockManager {
 
     }
 
-    public Stock getStock(int stockid) {
-        Stock stock = new Stock();
+    public Stock getStock(String code) {
+        Stock stock;
         try {
             entityManager.getTransaction().begin();
-            stock = (Stock) entityManager.find(Stock.class, stockid);
+            stock = (Stock)entityManager.createQuery("Select e from Stock e where e.code='"+code+"'").getResultList().get(0);
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
+            return null;
         }
         return stock;
     }

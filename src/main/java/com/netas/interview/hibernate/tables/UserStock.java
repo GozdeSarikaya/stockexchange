@@ -14,7 +14,31 @@ public class UserStock {
 
     private int userid;
     private int stockid;
+    private int stockcount;
 
+    public int getUserid() {
+        return userid;
+    }
+
+    public void setUserid(int userid) {
+        this.userid = userid;
+    }
+
+    public int getStockid() {
+        return stockid;
+    }
+
+    public void setStockid(int stockid) {
+        this.stockid = stockid;
+    }
+
+    public int getStockcount() {
+        return stockcount;
+    }
+
+    public void setStockcount(int stockcount) {
+        this.stockcount = stockcount;
+    }
 
     @Override
     public String toString() {
