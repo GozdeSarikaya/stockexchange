@@ -1,6 +1,6 @@
 package com.netas.interview.application;
 
-import com.netas.interview.http.server.HttpServer;
+import com.netas.interview.http.server.application.HttpServerManager;
 
 public class StockExchangeManager {
 
@@ -15,7 +15,7 @@ public class StockExchangeManager {
 
     //region Private Members
     private StockExchangeContext stockExchangeContext;
-    private HttpServer httpServer;
+    private HttpServerManager httpServerManager;
 
     //endregion
 
@@ -25,9 +25,9 @@ public class StockExchangeManager {
     public void initialize() {
 
         stockExchangeContext = new StockExchangeContext(new StockExchangeConfiguration());
-        httpServer = new HttpServer();
+        httpServerManager = new HttpServerManager();
         try {
-            httpServer.start();
+            httpServerManager.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
