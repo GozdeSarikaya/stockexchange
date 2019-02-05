@@ -3,11 +3,11 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
     <persistence-unit name="test" transaction-type="RESOURCE_LOCAL">
-        <class>com.netas.interview.hibernate.tables.Profile</class>
-        <class>com.netas.interview.hibernate.tables.User</class>
-        <class>com.netas.interview.hibernate.tables.Stock</class>
-        <class>com.netas.interview.hibernate.tables.UserStock</class>
-        <class>com.netas.interview.utility.EntityManagerUtility</class>
+        <class>stock.exchange.example.hibernate.tables.Profile</class>
+        <class>stock.exchange.example.hibernate.tables.User</class>
+        <class>stock.exchange.example.hibernate.tables.Stock</class>
+        <class>stock.exchange.example.hibernate.tables.UserStock</class>
+        <class>stock.exchange.example.utility.EntityManagerUtility</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
             <property name="javax.persistence.jdbc.url"    value="jdbc:h2:~/test;DB_CLOSE_ON_EXIT=TRUE;FILE_LOCK=NO" />
