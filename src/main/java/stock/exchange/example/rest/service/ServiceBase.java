@@ -2,6 +2,7 @@ package stock.exchange.example.rest.service;
 
 
 import stock.exchange.example.rest.authentication.UserSessionView;
+import stock.exchange.example.rest.security.SecurityManager;
 
 import javax.annotation.PreDestroy;
 import javax.servlet.http.HttpServletRequest;
@@ -27,17 +28,17 @@ public abstract class ServiceBase {
 
     //region Public Members
 
-    public UserSessionView getUserSessionView() throws Exception {
-        UserSessionView userSessionView = null;
-        try {
-            userSessionView = new UserSessionView();
-            securityManager = new stock.exchange.example.rest.security.SecurityManager();
-            securityManager.getSecurityContext().setUserSessionView(userSessionView);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
+
+    public SecurityManager getSecurityManager() throws Exception{
+        if (securityManager == null)
+            initializeSecurityManager();
+        return securityManager;
+    }
+
+    public UserSessionView getUserSessionView() throws Exception{
         return securityManager.getSecurityContext().getUserSessionView();
     }
+
 
     //endregion
 
@@ -48,17 +49,22 @@ public abstract class ServiceBase {
         this.servletRequest = servletRequest;
 
         try {
-            initializeHttpServletRequest();
+            securityManager = new SecurityManager();
+            initializeHttpServletRequest(securityManager);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    private void initializeHttpServletRequest() throws Exception {
+    private void initializeHttpServletRequest(SecurityManager securityManager) throws Exception {
         if (servletRequest != null) {
-            servletRequest.setAttribute("TokenUserSessionView", getUserSessionView());
+            servletRequest.setAttribute("TokenUserSessionView", securityManager.getSecurityContext().getUserSessionView());
         }
+    }
+
+    private void initializeSecurityManager() throws Exception {
+        securityManager = new SecurityManager();
     }
     //endregion
 

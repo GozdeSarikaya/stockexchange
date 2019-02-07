@@ -10,11 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 
 public class JWTManager {
     public static String signWithKey = "netas2018"; //TODO Key
-    public static String generateToken(String loginname, String userType){
+    public static String generateToken(String loginname, String profilename){
         String token = Jwts.builder()
                 .setIssuer("GozdeSarikaya")
-                .setId(String.valueOf(loginname))
-                .setSubject(String.valueOf(userType))
+                .setId(String.valueOf(loginname).toLowerCase())
+                .setSubject(String.valueOf(profilename).toLowerCase())
                 .signWith(SignatureAlgorithm.HS512, signWithKey)
                 .compact();
 
@@ -32,8 +32,8 @@ public class JWTManager {
 
         try {
             tokenUserSessionView = (UserSessionView)servletRequest.getAttribute("TokenUserSessionView");
-            tokenUserSessionView.setLoginname(String.valueOf(jws.getBody().getId()));
-            tokenUserSessionView.setUserType(String.valueOf(jws.getBody().getSubject()));
+            tokenUserSessionView.setLoginname(String.valueOf(jws.getBody().getId()).toLowerCase());
+            tokenUserSessionView.setProfilename(String.valueOf(jws.getBody().getSubject()).toLowerCase());
         } catch (Exception ex) {
             throw new Exception("İstek kullanıcı bilgileri hazırlama işleminde hata oluştu ",ex);
         }

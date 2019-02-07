@@ -10,6 +10,8 @@ public class SecurityContext {
     private UserSessionView userSessionView;
 
     public UserSessionView getUserSessionView() {
+        if(userSessionView == null)
+            userSessionView = new UserSessionView();
         return userSessionView;
     }
 

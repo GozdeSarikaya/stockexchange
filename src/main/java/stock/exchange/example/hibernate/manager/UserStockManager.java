@@ -4,15 +4,19 @@ package stock.exchange.example.hibernate.manager;
 import stock.exchange.example.operation.Broker;
 import stock.exchange.example.operation.BuyStock;
 import stock.exchange.example.operation.Stock;
+import stock.exchange.example.rest.authentication.UserSessionView;
 import stock.exchange.example.utility.EntityManagerUtility;
 
 import javax.persistence.EntityManager;
 
 public class UserStockManager {
 
+    public UserStockManager(UserSessionView userSessionView) {
+        this.userSessionView = userSessionView;
+    }
 
     private EntityManager entityManager = EntityManagerUtility.getEntityManager();
-
+    private UserSessionView userSessionView;
 
     public Stock buyStock(String stockCode, String userid) {
 

@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: stock.exchange.example.bigdata.kafka.producer.KafkaMsgProd
+ ucer
+

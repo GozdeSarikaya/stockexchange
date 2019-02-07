@@ -1,23 +1,30 @@
 package stock.exchange.example.hibernate.manager;
 
+import org.json.simple.JSONObject;
 import stock.exchange.example.hibernate.tables.User;
 import stock.exchange.example.hibernate.view.user.EditUserView;
 import stock.exchange.example.hibernate.view.user.SaveUserView;
 import stock.exchange.example.rest.authentication.JWTManager;
+import stock.exchange.example.rest.authentication.UserSessionView;
 import stock.exchange.example.utility.EntityManagerUtility;
-import org.json.simple.JSONObject;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserManager {
 
+
+    public UserManager(UserSessionView userSessionView) {
+        this.userSessionView = userSessionView;
+    }
+
+
     private EntityManager entityManager = EntityManagerUtility.getEntityManager();
+    private UserSessionView userSessionView;
 
-
-    public User saveUser(SaveUserView userView) {
+    public User saveUser(SaveUserView userView) throws Exception {
         User user = new User();
         try {
             entityManager.getTransaction().begin();
@@ -30,12 +37,13 @@ public class UserManager {
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
+            throw new Exception("User could not be saved!");
         }
         return user;
     }
 
 
-    public void deleteUser(int userid) {
+    public void deleteUser(int userid) throws Exception {
         try {
             entityManager.getTransaction().begin();
             User student = (User) entityManager.find(User.class, userid);
@@ -43,11 +51,13 @@ public class UserManager {
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
+            throw new Exception("User " + userid + "could not be deleted!");
+
         }
 
     }
 
-    public User getUser(int userid) {
+    public User getUser(int userid) throws Exception {
         User user;
         try {
             entityManager.getTransaction().begin();
@@ -55,25 +65,30 @@ public class UserManager {
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
-            return null;
+            throw new Exception("User " + userid + " could not be list!");
         }
         return user;
     }
 
-    public void editUser(EditUserView editUserView) {
+    public void editUser(EditUserView editUserView) throws Exception {
+        List<User> userList;
         try {
             entityManager.getTransaction().begin();
-            User user = (User) entityManager.find(User.class, editUserView.getId());
+            userList = entityManager.createQuery("Select e.id from User e where e.loginname='" + editUserView.getLoginname() + "'").getResultList();
+
+            User user = (User) entityManager.find(User.class, userList.get(0));
             user.setLoginname(editUserView.getLoginname());
             user.setPassword(editUserView.getPassword());
             user.setLastmodifieddate(new Timestamp(System.currentTimeMillis()));
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
+            throw new Exception("User could not be edited!");
+
         }
     }
 
-    public List<User> getUserList() {
+    public List<User> getUserList() throws Exception {
         List<User> userList = new ArrayList<>();
         try {
             entityManager.getTransaction().begin();
@@ -81,11 +96,12 @@ public class UserManager {
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
+            throw new Exception("User list could not be get!");
         }
         return userList;
     }
 
-    public JSONObject validateUser(String loginname, String password) {
+    public JSONObject validateUser(String loginname, String password) throws Exception {
         JSONObject jsonObject = new JSONObject();
         List<User> userList;
         try {
@@ -94,14 +110,14 @@ public class UserManager {
             entityManager.getTransaction().commit();
 
             if (userList.size() == 1)
-                jsonObject.put("token", JWTManager.generateToken(userList.get(0).getLoginname(), userList.get(0).getProfilename().toLowerCase()));
+                jsonObject.put("token", JWTManager.generateToken(userList.get(0).getLoginname().toLowerCase(), userList.get(0).getProfilename().toLowerCase()));
             else
                 jsonObject.put("token", "");
 
 
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
-            return null;
+            throw new Exception("Username/password is not valid!");
         }
         return jsonObject;
 

@@ -4,17 +4,8 @@ import java.io.Serializable;
 
 public class EditUserView implements Serializable {
 
-    private int id;
     private String loginname;
     private String password;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getLoginname() {
         return loginname;

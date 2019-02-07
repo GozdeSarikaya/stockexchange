@@ -3,7 +3,7 @@ package stock.exchange.example.rest.authentication;
 public class UserSessionView implements java.io.Serializable
 {
     private String loginname;
-    private String userType;
+    private String profilename;
 
     public UserSessionView() {
     }
@@ -16,12 +16,12 @@ public class UserSessionView implements java.io.Serializable
         this.loginname = loginname;
     }
 
-    public String getUserType() {
-        return userType;
+    public String getProfilename() {
+        return profilename;
     }
 
-    public void setUserType(String userType) {
-        this.userType = userType;
+    public void setProfilename(String profilename) {
+        this.profilename = profilename;
     }
 }
 

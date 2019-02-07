@@ -1,7 +1,6 @@
 package stock.exchange.example.rest.service;
 
-import stock.exchange.example.hibernate.manager.StockManager;
-import stock.exchange.example.hibernate.manager.UserManager;
+import org.json.simple.JSONObject;
 import stock.exchange.example.hibernate.tables.Stock;
 import stock.exchange.example.hibernate.tables.User;
 import stock.exchange.example.hibernate.view.stock.EditStockView;
@@ -9,7 +8,6 @@ import stock.exchange.example.hibernate.view.stock.SaveStockView;
 import stock.exchange.example.hibernate.view.user.EditUserView;
 import stock.exchange.example.hibernate.view.user.SaveUserView;
 import stock.exchange.example.rest.authentication.Secured;
-import org.json.simple.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -20,7 +18,7 @@ import java.util.List;
 
 
 @Path("/")
-public class ServiceManager extends ServiceBase{
+public class ServiceManager extends ServiceBase {
 
 
     public ServiceManager(@Context HttpServletRequest servletRequest) throws Exception {
@@ -42,18 +40,19 @@ public class ServiceManager extends ServiceBase{
     @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/validate")
-    public Response validateUser(@FormParam("loginname") String loginname, @FormParam("password") String password) {
-        JSONObject jsonObject = new JSONObject();
-        UserManager userManager;
+    public Response validateUser(@FormParam("loginname") String loginname, @FormParam("password") String password) throws Exception {
+        JSONObject jsonObject;
         try {
+            if (loginname == null || password == null)
+                throw new Exception("Username/password is not valid!");
 
-            userManager = new UserManager();
-            jsonObject= userManager.validateUser(loginname, password);
-            // stock = stockManager.getStock(stockid);
-            // jsonObject.put("stock", objectMapper.writeValueAsString(stock));
+            jsonObject = this.getSecurityManager().getUserManager().validateUser(loginname, password);
+
+            if (jsonObject.get("token").equals(""))
+                throw new Exception("Validation could not be completed!");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception("Username/password is not valid!");
         }
 
         return Response.ok(jsonObject, MediaType.APPLICATION_JSON).build();
@@ -65,64 +64,55 @@ public class ServiceManager extends ServiceBase{
 
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     @Path("/stock/get")
-    public Response getStock(@QueryParam("code") String code) {
-        JSONObject jsonObject = new JSONObject();
+    public Response getStock(@QueryParam("code") String code) throws Exception {
         Stock stock;
-        StockManager stockManager;
         try {
-
-            stockManager = new StockManager();
-            stock = stockManager.getStock(code);
-            if (stock != null)
-                jsonObject.put("stock", stock);
-            else
-                Response.ok().entity("Stock is NOT found!").build();
+            stock = this.getSecurityManager().getStockManager().getStock(code);
+            if (stock == null)
+                return Response.ok().entity("Stock not found!").build();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception("Stock not found!");
         }
 
-        return Response.ok(jsonObject, MediaType.APPLICATION_JSON).build();
+        return Response.ok(stock, MediaType.APPLICATION_JSON).build();
     }
 
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/stock/list")
-    public Response listStock() {
+    public Response listStock() throws Exception {
 
-        JSONObject jsonObject = new JSONObject();
         List<Stock> stockList;
-        StockManager stockManager;
         try {
 
-            stockManager = new StockManager();
-            stockList = stockManager.getStockList();
-            jsonObject.put("stocklist", stockList);
+            stockList = this.getSecurityManager().getStockManager().getStockList();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception("Stock list not found!");
         }
 
-        return Response.ok(jsonObject, MediaType.APPLICATION_JSON).build();
+        return Response.ok(stockList, MediaType.APPLICATION_JSON).build();
     }
 
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/delete")
     @Secured
-    public Response deleteStock(@QueryParam("code") String code) {
+    public Response deleteStock(@QueryParam("code") String code) throws Exception {
 
-        StockManager stockManager;
         try {
 
-            stockManager = new StockManager();
-            stockManager.deleteStock(code);
+            if (this.getUserSessionView().getProfilename().equalsIgnoreCase("admin"))
+                this.getSecurityManager().getStockManager().deleteStock(code);
+            else
+                return Response.ok().entity("Unauthorized Operation!").build();
 
         } catch (Exception e) {
-            Response.status(Response.Status.EXPECTATION_FAILED).entity("Stock could not deleted!").build();
+            throw new Exception("Stock could not deleted!");
         }
 
         return Response.ok().entity("Stock Deleted!").build();
@@ -132,16 +122,14 @@ public class ServiceManager extends ServiceBase{
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/save")
+    @Secured
     public Response saveStock(SaveStockView saveStockView) throws Exception {
-
-        StockManager stockManager;
         try {
-
-            stockManager = new StockManager();
-            stockManager.saveStock(saveStockView);
+            saveStockView.setLastmodifiedby(this.getUserSessionView().getLoginname());
+            this.getSecurityManager().getStockManager().saveStock(saveStockView);
 
         } catch (Exception e) {
-            return Response.status(Response.Status.EXPECTATION_FAILED).entity("Stock could not be saved!").build();
+            throw new Exception("Stock could not be saved!");
         }
 
         return Response.ok().entity("Stock Saved!").build();
@@ -151,16 +139,15 @@ public class ServiceManager extends ServiceBase{
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/edit")
+    @Secured
     public Response editStock(EditStockView editStockView) throws Exception {
 
-        StockManager stockManager;
         try {
-
-            stockManager = new StockManager();
-            stockManager.editStock(editStockView);
+            editStockView.setLastmodifiedby(this.getUserSessionView().getLoginname());
+            this.getSecurityManager().getStockManager().editStock(editStockView);
 
         } catch (Exception e) {
-            return Response.status(Response.Status.EXPECTATION_FAILED).entity("Stock could not be edited!").build();
+            throw new Exception("Stock could not be edited!");
         }
 
         return Response.ok().entity("Stock Edited!").build();
@@ -174,63 +161,59 @@ public class ServiceManager extends ServiceBase{
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/user/list")
-    public Response listUser() {
-
-        JSONObject jsonObject = new JSONObject();
-        List<User> userList;
-        UserManager user;
+    @Secured
+    public Response listUser() throws Exception {
+        List<User> userList = null;
         try {
+            if (this.getUserSessionView().getProfilename().equalsIgnoreCase("admin"))
+                userList = this.getSecurityManager().getUserManager().getUserList();
+            else
+                return Response.ok().entity("Unauthorized Operation!").build();
 
-            user = new UserManager();
-            userList = user.getUserList();
-            jsonObject.put("userlist", userList);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception("User list not found!");
         }
 
-        return Response.ok(jsonObject, MediaType.APPLICATION_JSON).build();
+        return Response.ok(userList, MediaType.APPLICATION_JSON).build();
     }
 
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/user/get")
-    public Response getUser(@QueryParam("userid") int userid) {
+    @Secured
+    public Response getUser(@QueryParam("userid") int userid) throws Exception {
 
-        JSONObject jsonObject = new JSONObject();
         User user;
-        UserManager userManager;
         try {
-
-            userManager = new UserManager();
-            user = userManager.getUser(userid);
-            if (user != null)
-                jsonObject.put("user", user);
+            if (this.getUserSessionView().getProfilename().equalsIgnoreCase("admin"))
+                user = this.getSecurityManager().getUserManager().getUser(userid);
             else
-                Response.ok().entity("User is NOT found!").build();
+                return Response.ok().entity("Unauthorized Operation!").build();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception("User not found!");
         }
 
-        return Response.ok(jsonObject, MediaType.APPLICATION_JSON).build();
+        return Response.ok(user, MediaType.APPLICATION_JSON).build();
     }
 
 
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/user/delete")
-    public Response deleteUser(@QueryParam("userid") int userid) {
+    @Secured
+    public Response deleteUser(@QueryParam("userid") int userid) throws Exception {
 
-        UserManager user;
         try {
-
-            user = new UserManager();
-            user.deleteUser(userid);
+            if (this.getUserSessionView().getProfilename().equalsIgnoreCase("admin"))
+                this.getSecurityManager().getUserManager().deleteUser(userid);
+            else
+                return Response.ok().entity("Unauthorized Operation!").build();
 
         } catch (Exception e) {
-            return Response.status(Response.Status.EXPECTATION_FAILED).entity("User could not deleted!").build();
+            throw new Exception("User could not deleted!");
         }
 
         return Response.ok().entity("User Deleted!").build();
@@ -244,14 +227,16 @@ public class ServiceManager extends ServiceBase{
     @Secured
     public Response saveUser(SaveUserView saveUserView) throws Exception {
 
-        UserManager user;
         try {
 
-            user = new UserManager();
-            user.saveUser(saveUserView);
+            if (this.getUserSessionView().getProfilename().equalsIgnoreCase("admin"))
+                this.getSecurityManager().getUserManager().saveUser(saveUserView);
+            else
+                return Response.ok().entity("Unauthorized Operation!").build();
+
 
         } catch (Exception e) {
-            return Response.status(Response.Status.EXPECTATION_FAILED).entity("User could not be saved!").build();
+            throw new Exception("User could not be saved!");
         }
 
         return Response.ok().entity("User Saved!").build();
@@ -261,16 +246,14 @@ public class ServiceManager extends ServiceBase{
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/user/edit")
+    @Secured
     public Response editUser(EditUserView saveUserView) throws Exception {
 
-        UserManager user;
         try {
-
-            user = new UserManager();
-            user.editUser(saveUserView);
+            this.getSecurityManager().getUserManager().editUser(saveUserView);
 
         } catch (Exception e) {
-            return Response.status(Response.Status.EXPECTATION_FAILED).entity("User could not be edited!").build();
+            throw new Exception("User could not be edited!");
         }
 
         return Response.ok().entity("User Edited!").build();
