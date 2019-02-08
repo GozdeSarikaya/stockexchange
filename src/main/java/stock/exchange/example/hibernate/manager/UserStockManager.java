@@ -1,9 +1,7 @@
 package stock.exchange.example.hibernate.manager;
 
 
-import stock.exchange.example.operation.Broker;
-import stock.exchange.example.operation.BuyStock;
-import stock.exchange.example.operation.Stock;
+import stock.exchange.example.hibernate.tables.UserStock;
 import stock.exchange.example.rest.authentication.UserSessionView;
 import stock.exchange.example.utility.EntityManagerUtility;
 
@@ -18,31 +16,69 @@ public class UserStockManager {
     private EntityManager entityManager = EntityManagerUtility.getEntityManager();
     private UserSessionView userSessionView;
 
-    public Stock buyStock(String stockCode, String userid) {
+    public UserStock editUserStockAmount(String loginname, String stockCode, int amout)throws Exception {
 
-        Stock stock = new Stock();
-
-        BuyStock buyStockOrder = new BuyStock(stock);
-
+        UserStock userStock;
         try {
-
-            Broker broker = new Broker();
-            broker.takeOrder(buyStockOrder);
-
-            broker.placeOrders();
+            entityManager.getTransaction().begin();
+            userStock = (UserStock) entityManager.find(UserStock.class, loginname); //TODO
+            userStock.setStockcount(amout);
+            entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
+            throw new Exception("UserStock could not be bought!");
         }
-        return stock;
+
+        return userStock;
     }
 
-    public Stock sellStock(String stockCode, String userid) {
-        Stock stock = new Stock();
-        try {
+    public UserStock getUserStockAmount(String loginname, String code)throws Exception {
 
+        UserStock userStock;
+        try {
+            entityManager.getTransaction().begin();
+            userStock = (UserStock)entityManager.createQuery("Select e.stockcount from UserStock e where e.code='"+code+"'").getResultList().get(0);
+            entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
+            throw new Exception("UserStock could not be bought!");
         }
-        return stock;
+
+        return userStock;
+    }
+
+    public UserStock buyStock(String loginname, String stockCode, int amount)throws Exception {
+
+            UserStock userStock = new UserStock();
+            try {
+                entityManager.getTransaction().begin();
+                userStock.setStockcount(amount);
+                userStock.setCode(stockCode);
+                userStock.setLoginname(loginname);
+                entityManager.merge(userStock);
+                entityManager.getTransaction().commit();
+            } catch (Exception e) {
+                entityManager.getTransaction().rollback();
+                throw new Exception("UserStock could not be bought!");
+            }
+
+        return userStock;
+    }
+
+    public UserStock sellStock(String loginname,String stockCode, int amount) throws Exception {
+        UserStock userStock = new UserStock();
+        try {
+            entityManager.getTransaction().begin();
+            userStock.setStockcount(amount);
+            userStock.setCode(stockCode);
+            userStock.setLoginname(loginname);
+            entityManager.merge(userStock);
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
+            throw new Exception("Stock could not be sold out!");
+        }
+
+        return userStock;
     }
 }

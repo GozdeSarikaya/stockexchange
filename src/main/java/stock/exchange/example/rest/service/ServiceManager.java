@@ -180,7 +180,7 @@ public class ServiceManager extends ServiceBase {
 
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     @Path("/user/get")
     @Secured
     public Response getUser(@QueryParam("userid") int userid) throws Exception {
@@ -266,16 +266,33 @@ public class ServiceManager extends ServiceBase {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/buy")
-    public String buyStock() {
-        return "Hello, World!";
+    @Secured
+    public Response buyStock(@QueryParam("stockcode") String stockcode, @QueryParam("amount") int amount) {
+
+        try {
+            this.getSecurityManager().getUserStockManager().buyStock(this.getUserSessionView().getLoginname(),stockcode,amount);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return Response.ok("").build();
+
     }
 
 
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/sell")
-    public String sellStock() {
-        return "Hello, World!";
+    public Response sellStock(@QueryParam("stockcode") String stockcode, @QueryParam("amount") int amount) {
+
+        try {
+            this.getSecurityManager().getUserStockManager().sellStock(this.getUserSessionView().getLoginname(),stockcode,amount);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return Response.ok("").build();
+
     }
     //endregion
 

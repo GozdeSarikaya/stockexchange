@@ -12,24 +12,25 @@ public class UserStock {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private int userid;
-    private int stockid;
+    private String loginname;
+    private String code;
     private int stockcount;
+    private double totalprice;
 
-    public int getUserid() {
-        return userid;
+    public String getLoginname() {
+        return loginname;
     }
 
-    public void setUserid(int userid) {
-        this.userid = userid;
+    public void setLoginname(String loginname) {
+        this.loginname = loginname;
     }
 
-    public int getStockid() {
-        return stockid;
+    public String getCode() {
+        return code;
     }
 
-    public void setStockid(int stockid) {
-        this.stockid = stockid;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public int getStockcount() {
@@ -40,12 +41,23 @@ public class UserStock {
         this.stockcount = stockcount;
     }
 
+
+    public double getTotalprice() {
+        return totalprice;
+    }
+
+    public void setTotalprice(double totalprice) {
+        this.totalprice = totalprice;
+    }
+
     @Override
     public String toString() {
         return "{" +
                 "id=" + id +
-                ", userid=" + userid +
-                ", stockid=" + stockid +
+                ", loginname='" + loginname + '\'' +
+                ", code='" + code + '\'' +
+                ", stockcount=" + stockcount +
+                ", totalprice=" + totalprice +
                 '}';
     }
 }
