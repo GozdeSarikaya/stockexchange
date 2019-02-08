@@ -110,7 +110,7 @@ public class UserManager {
             entityManager.getTransaction().commit();
 
             if (userList.size() == 1)
-                jsonObject.put("token", JWTManager.generateToken(userList.get(0).getLoginname().toLowerCase(), userList.get(0).getProfilename().toLowerCase()));
+                jsonObject.put("token", JWTManager.generateToken(userList.get(0).getLoginname(), userList.get(0).getProfilename()));
             else
                 jsonObject.put("token", "");
 

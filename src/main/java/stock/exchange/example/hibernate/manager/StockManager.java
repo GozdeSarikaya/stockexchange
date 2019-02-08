@@ -23,6 +23,7 @@ public class StockManager {
 
     public Stock saveStock(SaveStockView stockView) throws Exception {
         Stock stock = new Stock();
+
         try {
             entityManager.getTransaction().begin();
             stock.setCode(stockView.getCode());
@@ -32,6 +33,7 @@ public class StockManager {
             stock.setLastmodifieddate(new Timestamp(System.currentTimeMillis()));
             stock = entityManager.merge(stock);
             entityManager.getTransaction().commit();
+
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
             throw new Exception("Stock could not be saved!");

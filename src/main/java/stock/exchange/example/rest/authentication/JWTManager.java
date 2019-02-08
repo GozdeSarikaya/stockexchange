@@ -13,8 +13,8 @@ public class JWTManager {
     public static String generateToken(String loginname, String profilename){
         String token = Jwts.builder()
                 .setIssuer("GozdeSarikaya")
-                .setId(String.valueOf(loginname).toLowerCase())
-                .setSubject(String.valueOf(profilename).toLowerCase())
+                .setId(String.valueOf(loginname))
+                .setSubject(String.valueOf(profilename))
                 .signWith(SignatureAlgorithm.HS512, signWithKey)
                 .compact();
 
@@ -32,8 +32,8 @@ public class JWTManager {
 
         try {
             tokenUserSessionView = (UserSessionView)servletRequest.getAttribute("TokenUserSessionView");
-            tokenUserSessionView.setLoginname(String.valueOf(jws.getBody().getId()).toLowerCase());
-            tokenUserSessionView.setProfilename(String.valueOf(jws.getBody().getSubject()).toLowerCase());
+            tokenUserSessionView.setLoginname(String.valueOf(jws.getBody().getId()));
+            tokenUserSessionView.setProfilename(String.valueOf(jws.getBody().getSubject()));
         } catch (Exception ex) {
             throw new Exception("İstek kullanıcı bilgileri hazırlama işleminde hata oluştu ",ex);
         }

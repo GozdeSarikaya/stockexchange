@@ -23,7 +23,6 @@ public abstract class ServiceBase {
     private HttpServletRequest servletRequest;
     private UserSessionView userSessionView;
     private stock.exchange.example.rest.security.SecurityManager securityManager;
-
     //endregion
 
     //region Public Members

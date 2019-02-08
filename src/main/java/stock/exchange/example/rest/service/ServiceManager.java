@@ -124,8 +124,10 @@ public class ServiceManager extends ServiceBase {
     @Path("/stock/save")
     @Secured
     public Response saveStock(SaveStockView saveStockView) throws Exception {
+
         try {
             saveStockView.setLastmodifiedby(this.getUserSessionView().getLoginname());
+
             this.getSecurityManager().getStockManager().saveStock(saveStockView);
 
         } catch (Exception e) {
@@ -267,15 +269,18 @@ public class ServiceManager extends ServiceBase {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/buy")
     @Secured
-    public Response buyStock(@QueryParam("stockcode") String stockcode, @QueryParam("amount") int amount) {
+    public Response buyStock(@FormParam("code") String code, @FormParam("amount") int amount) {
 
         try {
-            this.getSecurityManager().getUserStockManager().buyStock(this.getUserSessionView().getLoginname(),stockcode,amount);
+            if (code == null || amount == 0)
+                throw new Exception("StockCode is not valid!");
+            else
+                this.getSecurityManager().getUserStockManager().buyStock(this.getUserSessionView().getLoginname(), code, amount);
         } catch (Exception e) {
-            e.printStackTrace();
+            return Response.ok().entity("Stock could not be bought!").build();
         }
 
-        return Response.ok("").build();
+        return Response.ok("Stock(s) bought!").build();
 
     }
 
@@ -283,15 +288,19 @@ public class ServiceManager extends ServiceBase {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/stock/sell")
-    public Response sellStock(@QueryParam("stockcode") String stockcode, @QueryParam("amount") int amount) {
+    @Secured
+    public Response sellStock(@FormParam("code") String code, @FormParam("amount") int amount) {
 
         try {
-            this.getSecurityManager().getUserStockManager().sellStock(this.getUserSessionView().getLoginname(),stockcode,amount);
+            if (code == null || amount == 0)
+                throw new Exception("StockCode is not valid!");
+            else
+                this.getSecurityManager().getUserStockManager().sellStock(this.getUserSessionView().getLoginname(), code, amount);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return Response.ok("").build();
+        return Response.ok("Stock sold out!").build();
 
     }
     //endregion
