@@ -1,8 +1,5 @@
 package stock.exchange.example.http.server.provider;
 
-import stock.exchange.example.http.server.base.IHttpServer;
-import stock.exchange.example.rest.authentication.AuthenticationFilter;
-import com.sun.deploy.services.ServiceManager;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -12,6 +9,9 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Slf4jLog;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
+import stock.exchange.example.http.server.base.IHttpServer;
+import stock.exchange.example.rest.authentication.AuthenticationFilter;
+import stock.exchange.example.rest.service.ServiceManager;
 
 public class JettyServer implements IHttpServer {
     //region Constructor
